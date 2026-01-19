@@ -82,6 +82,12 @@
             margin-top: 0;
         }
 
+        /* Section wrapper to keep heading + content together */
+        .section {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
         h2 {
             font-size: 1.4rem;
             color: var(--primary-dark);
@@ -95,7 +101,7 @@
             display: flex;
             align-items: center;
         }
-        
+
         /* Decorative marker for H2 */
         h2::before {
             content: '';
@@ -114,6 +120,7 @@
             margin-bottom: 0.75rem;
             font-weight: 600;
             break-after: avoid;
+            page-break-after: avoid;
         }
 
         h4 {
@@ -123,6 +130,8 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-top: 1.25rem;
+            break-after: avoid;
+            page-break-after: avoid;
         }
 
         p {
@@ -368,8 +377,14 @@
             }
 
             /* Prevent elements from breaking awkwardly across columns */
-            h2, h3, .table-wrapper, blockquote, pre, ul {
+            h2, h3, h4, .table-wrapper, blockquote, pre, ul, ol, p {
                 break-inside: avoid;
+            }
+
+            /* Keep sections together */
+            .section {
+                break-inside: avoid;
+                page-break-inside: avoid;
             }
 
             /* Hide scroll hint on desktop */
@@ -2410,6 +2425,55 @@ Course  1 —— * Enrollment
             }
         }
     });
+
+    // Wrap h2/h3 headings with their following content into sections
+    // This prevents headings from being orphaned at the bottom of a column
+    function wrapSections() {
+        var container = document.querySelector('.content-columns');
+        if (!container) return;
+
+        var children = Array.from(container.children);
+        var i = 0;
+
+        while (i < children.length) {
+            var el = children[i];
+
+            // Skip h1 elements (major section headers that span columns)
+            if (el.tagName === 'H1') {
+                i++;
+                continue;
+            }
+
+            // For h2 and h3, wrap with following content until next heading of same or higher level
+            if (el.tagName === 'H2' || el.tagName === 'H3') {
+                var section = document.createElement('div');
+                section.className = 'section';
+
+                // Insert section before the heading
+                el.parentNode.insertBefore(section, el);
+
+                // Move heading into section
+                section.appendChild(el);
+
+                // Move following siblings until we hit another h1, h2, or (for h3) h3
+                var stopTags = el.tagName === 'H2' ? ['H1', 'H2'] : ['H1', 'H2', 'H3'];
+                var next = section.nextSibling;
+
+                while (next && (!next.tagName || stopTags.indexOf(next.tagName) === -1)) {
+                    var toMove = next;
+                    next = next.nextSibling;
+                    section.appendChild(toMove);
+                }
+
+                // Update children array since DOM changed
+                children = Array.from(container.children);
+            }
+
+            i++;
+        }
+    }
+
+    wrapSections();
 
     console.log("Ready for printing. Use Ctrl+P / Cmd+P");
 </script>
