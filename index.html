@@ -140,25 +140,59 @@
             margin-bottom: 0.5rem;
         }
 
-        /* TABLES - Mobile Scrollable */
-        table {
-            display: block; /* Allows scrolling on small screens */
+        /* TABLE WRAPPER for mobile scroll */
+        .table-wrapper {
             width: 100%;
             overflow-x: auto;
-            border-collapse: collapse;
+            -webkit-overflow-scrolling: touch;
             margin-bottom: 1.5rem;
             border-radius: 8px;
-            overflow: hidden; /* For border radius */
             border: 1px solid var(--border);
-            font-size: 0.95rem;
             background: white;
-            white-space: nowrap; /* Prevents awkward wrapping in small cells */
+            position: relative;
+        }
+
+        /* Scroll hint gradient for mobile */
+        .table-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            background: linear-gradient(to left, rgba(255,255,255,0.9), transparent);
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        .table-wrapper.scrolled-end::after {
+            opacity: 0;
+        }
+
+        /* TABLES - Mobile Scrollable */
+        table {
+            width: 100%;
+            min-width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: white;
         }
 
         th, td {
-            padding: 12px 16px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border);
             text-align: left;
+            white-space: nowrap;
+        }
+
+        /* Allow text wrapping in cells on mobile for better readability */
+        @media (max-width: 480px) {
+            th, td {
+                white-space: normal;
+                min-width: 120px;
+                word-break: break-word;
+            }
         }
 
         th {
@@ -166,8 +200,11 @@
             color: var(--primary-dark);
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+            letter-spacing: 0.03em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
         tr:last-child td {
@@ -234,9 +271,79 @@
         }
 
         /* =========================================
+           MOBILE-FIRST ENHANCEMENTS
+           ========================================= */
+
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            body {
+                font-size: 15px;
+            }
+
+            .page-container {
+                padding: 0.75rem;
+            }
+
+            h1 {
+                font-size: 1.35rem;
+                padding: 1rem 1.25rem;
+                margin: 1.5rem -0.75rem 1rem -0.75rem;
+            }
+
+            h2 {
+                font-size: 1.15rem;
+                margin-top: 1.75rem;
+            }
+
+            h2::before {
+                width: 5px;
+                height: 1.15rem;
+                margin-right: 8px;
+            }
+
+            h3 {
+                font-size: 1rem;
+            }
+
+            ul, ol {
+                padding-left: 1.25rem;
+            }
+
+            blockquote {
+                padding: 1rem;
+                margin: 1rem 0;
+                font-size: 0.95rem;
+            }
+
+            pre {
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .table-wrapper {
+                margin-left: -0.75rem;
+                margin-right: -0.75rem;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+        }
+
+        /* Medium mobile devices */
+        @media (min-width: 481px) and (max-width: 767px) {
+            .page-container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                margin: 1.75rem -1.5rem 1.25rem -1.5rem;
+            }
+        }
+
+        /* =========================================
            MEDIA QUERIES (DESKTOP & TABLET)
            ========================================= */
-        
+
         @media (min-width: 768px) {
             body {
                 padding: 40px;
@@ -261,14 +368,22 @@
             }
 
             /* Prevent elements from breaking awkwardly across columns */
-            h2, h3, table, blockquote, pre, ul {
+            h2, h3, .table-wrapper, blockquote, pre, ul {
                 break-inside: avoid;
             }
-            
-            /* Allow tables to fit naturally */
-            table {
-                display: table;
+
+            /* Hide scroll hint on desktop */
+            .table-wrapper::after {
+                display: none;
+            }
+
+            th, td {
+                padding: 12px 16px;
                 white-space: normal;
+            }
+
+            th {
+                font-size: 0.85rem;
             }
         }
 
@@ -326,8 +441,21 @@
                 font-size: 10px;
             }
 
-            table, pre {
+            .table-wrapper, table, pre {
                 page-break-inside: avoid;
+            }
+
+            .table-wrapper {
+                border: none;
+                overflow: visible;
+            }
+
+            .table-wrapper::after {
+                display: none;
+            }
+
+            table {
+                border: 1px solid #ccc;
             }
             
             pre {
@@ -2098,7 +2226,27 @@ Course  1 —— * Enrollment
 </div>
 
 <script>
-    // Optional: Auto-print or helper logic could go here
+    // Wrap all tables in table-wrapper divs for mobile scrolling
+    document.querySelectorAll('table').forEach(function(table) {
+        if (!table.parentElement.classList.contains('table-wrapper')) {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'table-wrapper';
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+
+            // Handle scroll hint visibility
+            wrapper.addEventListener('scroll', function() {
+                var isAtEnd = wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 5;
+                wrapper.classList.toggle('scrolled-end', isAtEnd);
+            });
+
+            // Check initial state
+            if (wrapper.scrollWidth <= wrapper.clientWidth) {
+                wrapper.classList.add('scrolled-end');
+            }
+        }
+    });
+
     console.log("Ready for printing. Use Ctrl+P / Cmd+P");
 </script>
 
