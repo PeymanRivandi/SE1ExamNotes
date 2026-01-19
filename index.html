@@ -4,195 +4,340 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Software Engineering Exam Notes</title>
+    <!-- Importing Inter font for a modern, clean look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
+        /* MODERN THEME VARIABLES 
+           Soft, professional colors optimized for screen reading.
+        */
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #2980b9;
-            --bg-color: #ffffff;
-            --text-color: #333333;
-            --light-bg: #f8f9fa;
-            --border-color: #e9ecef;
+            --primary: #2563eb;       /* Modern vibrant blue */
+            --primary-dark: #1e3a8a;  /* Deep navy for headers */
+            --accent: #3b82f6;        /* Lighter blue for highlights */
+            --accent-bg: #eff6ff;     /* Very light blue background */
+            --text-main: #1f2937;     /* Dark gray (softer than black) */
+            --text-muted: #4b5563;    /* Muted gray for secondary text */
+            --bg-body: #f3f4f6;       /* Light gray background for the page */
+            --bg-card: #ffffff;       /* White for the content card */
+            --border: #e5e7eb;        /* Subtle border color */
+            --success: #059669;       /* Green for success/correct examples */
+            --danger: #dc2626;        /* Red for error/wrong examples */
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* RESET & BASE STYLES */
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-            font-size: 11px;
-            line-height: 1.4;
-            color: var(--text-color);
+            font-family: var(--font-main);
+            font-size: 16px; /* Increased from 11px for readability */
+            line-height: 1.6;
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
-            background-color: #f0f2f5;
-            -webkit-print-color-adjust: exact;
+            padding: 0;
+            background-color: var(--bg-body);
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* LAYOUT CONTAINER */
         .page-container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            padding: 40px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: var(--bg-card);
+            min-height: 100vh;
         }
 
-        /* Two-column layout for compactness while keeping readability */
+        /* RESPONSIVE COLUMN SYSTEM 
+           Mobile: 1 column
+           Desktop: 2 columns (Masonry style)
+        */
         .content-columns {
-            column-count: 2;
-            column-gap: 30px;
-            column-fill: balance;
+            column-count: 1;
+            column-gap: 2rem;
         }
 
         /* Headers */
         h1 {
-            column-span: all; /* Main titles span across columns */
-            background-color: var(--primary-color);
+            column-span: all;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
-            padding: 10px 15px;
-            font-size: 18px;
-            margin: 25px 0 15px 0;
-            border-radius: 4px;
+            padding: 1.5rem 2rem;
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 2rem -2rem 1.5rem -2rem; /* Bleed to edges on mobile */
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            break-after: avoid;
-            border-bottom: 3px solid #1a252f;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         
-        /* First H1 shouldn't have top margin */
+        /* Fix for the first header spacing */
         h1:first-of-type {
             margin-top: 0;
         }
 
         h2 {
-            font-size: 14px;
-            color: var(--accent-color);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 4px;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
             break-after: avoid;
             page-break-after: avoid;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Decorative marker for H2 */
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 1.4rem;
+            background-color: var(--accent);
+            margin-right: 12px;
+            border-radius: 4px;
         }
 
         h3 {
-            font-size: 12px;
-            color: var(--primary-color);
-            margin-top: 12px;
-            margin-bottom: 6px;
-            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
             break-after: avoid;
         }
 
         h4 {
-            font-size: 11px;
+            font-size: 0.95rem;
             font-weight: 700;
-            margin-top: 8px;
-            margin-bottom: 4px;
-            color: #555;
+            color: var(--text-muted);
             text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 1.25rem;
         }
 
         p {
-            margin: 0 0 8px 0;
-            text-align: justify;
+            margin-bottom: 1rem;
+            text-align: left; /* Justify is hard to read on mobile */
         }
 
-        /* Lists */
+        /* LISTS */
         ul, ol {
-            margin: 0 0 10px 0;
-            padding-left: 18px;
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
         }
-
+        
         li {
-            margin-bottom: 2px;
+            margin-bottom: 0.5rem;
         }
 
-        /* Tables */
+        /* TABLES - Mobile Scrollable */
         table {
+            display: block; /* Allows scrolling on small screens */
             width: 100%;
+            overflow-x: auto;
             border-collapse: collapse;
-            font-size: 10px;
-            margin-bottom: 12px;
-            break-inside: avoid;
-            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            overflow: hidden; /* For border radius */
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            background: white;
+            white-space: nowrap; /* Prevents awkward wrapping in small cells */
         }
 
         th, td {
-            padding: 5px 8px;
-            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
             text-align: left;
-            vertical-align: top;
         }
 
         th {
-            background-color: var(--light-bg);
+            background-color: var(--accent-bg);
+            color: var(--primary-dark);
             font-weight: 700;
-            color: var(--primary-color);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
         }
 
         tr:nth-child(even) {
-            background-color: #fcfcfc;
+            background-color: #f9fafb;
         }
 
-        /* Blockquotes for definitions */
+        /* SPECIAL ELEMENTS */
+        
+        /* Blockquotes - Make them pop */
         blockquote {
-            margin: 10px 0;
-            padding: 8px 12px;
-            background-color: var(--light-bg);
-            border-left: 4px solid var(--accent-color);
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background-color: var(--accent-bg);
+            border-left: 5px solid var(--accent);
             font-style: italic;
-            break-inside: avoid;
+            border-radius: 0 8px 8px 0;
+            color: var(--primary-dark);
+            position: relative;
         }
 
-        /* Code blocks */
+        /* Code & Preformatted */
         code {
-            font-family: 'Consolas', 'Monaco', monospace;
-            background-color: #f1f1f1;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-size: 10px;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            background-color: #f1f5f9;
             color: #d63384;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-size: 0.9em;
         }
 
         pre {
-            display: block;
-            background-color: #f8f9fa;
-            padding: 8px;
-            white-space: pre-wrap;
-            margin: 5px 0 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 10px;
-            break-inside: avoid;
+            background-color: #1e293b; /* Dark theme for code blocks */
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+        
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
         }
 
-        /* Divider lines */
-        hr {
-            border: 0;
-            border-top: 1px solid #eee;
-            margin: 20px 0;
-        }
-
-        /* Specific formatting for exam warnings/tips */
+        /* Highlight classes based on content (using CSS attribute selectors if classes aren't there) */
+        /* Since we can't add classes, we style 'strong' heavily */
         strong {
             font-weight: 700;
-            color: #2c3e50;
+            color: var(--text-main);
         }
 
-        /* Print Optimization */
+        /* Divider */
+        hr {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 3rem 0;
+        }
+
+        /* =========================================
+           MEDIA QUERIES (DESKTOP & TABLET)
+           ========================================= */
+        
+        @media (min-width: 768px) {
+            body {
+                padding: 40px;
+            }
+
+            .page-container {
+                padding: 3rem 4rem;
+                border-radius: 16px;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Enable 2 columns on desktop for efficiency */
+            .content-columns {
+                column-count: 2;
+                column-gap: 3rem;
+                column-fill: balance;
+            }
+
+            h1 {
+                margin: 2rem 0 2rem 0;
+                border-radius: 8px;
+            }
+
+            /* Prevent elements from breaking awkwardly across columns */
+            h2, h3, table, blockquote, pre, ul {
+                break-inside: avoid;
+            }
+            
+            /* Allow tables to fit naturally */
+            table {
+                display: table;
+                white-space: normal;
+            }
+        }
+
+        /* =========================================
+           PRINT STYLES (Preserve your Cheat Sheet)
+           ========================================= */
         @media print {
             body {
                 background: white;
                 padding: 0;
+                font-size: 11px; /* Back to small font for printing */
             }
+
             .page-container {
                 box-shadow: none;
                 padding: 0;
                 width: 100%;
                 max-width: none;
             }
-            h1 {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+
+            .content-columns {
+                column-count: 2;
+                column-gap: 20px;
+                display: block;
             }
+
+            h1 {
+                background: none;
+                color: black;
+                border-bottom: 2px solid black;
+                padding: 0;
+                margin: 20px 0;
+                font-size: 16px;
+                box-shadow: none;
+            }
+
+            h2 {
+                font-size: 14px;
+                border-left: none;
+                padding-left: 0;
+                margin-top: 15px;
+                background: none;
+                border-bottom: 1px solid #ccc;
+            }
+            
+            h2::before {
+                display: none;
+            }
+
+            blockquote {
+                border-left: 2px solid #666;
+                background: #eee;
+                padding: 5px 10px;
+                margin: 5px 0;
+                font-size: 10px;
+            }
+
+            table, pre {
+                page-break-inside: avoid;
+            }
+            
+            pre {
+                background: #f5f5f5;
+                color: black;
+                border: 1px solid #ccc;
+            }
+
+            /* Hide decorative elements */
+            ::-webkit-scrollbar { display: none; }
         }
     </style>
 </head>
